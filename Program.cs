@@ -10,6 +10,8 @@ namespace Malshinon
     {
         static void Main(string[] args)
         {
+            People p = new People("mm","zz",222, "Reporter");
+            Console.WriteLine(p);
         }
     }
 }
