@@ -5,6 +5,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using Mysqlx.Crud;
 
 
 namespace Malshinon
@@ -132,15 +133,38 @@ namespace Malshinon
                     cmd.ExecuteNonQuery();
                 }
 
-                Console.WriteLine("Row inserted intel report successfully.");
+                Console.WriteLine("Row inserted successfully.");
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error inserting intel report row: " + ex.Message);
             }
         }
+        public void UpdatedNumReports(int id)
+        {
+            string query = "UPDATE `people` SET `num_reports` = `num_reports` + 1 WHERE `id` = @id";
 
+            MySqlCommand cmd = null;
+            try
+            {
+                openConnection();
+                cmd = new MySqlCommand(query, _conn);
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+                Console.WriteLine("Num reports updated successfully.");
 
+            }
 
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error updated num reports: " + ex.Message);
+            }
+            finally
+            {
+                //if (reader != null && !reader.IsClosed)
+                //    reader.Close();
+                closeConnection();
+            } 
+        }
     }
 }
