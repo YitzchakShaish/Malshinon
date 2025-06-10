@@ -111,7 +111,36 @@ namespace Malshinon
             }
             return id;
         }
+        public void AddIntelReport(IntelReport intelReport)
+        {
+            try
+            {
+                openConnection();
 
-     
+                string query = $@"
+            INSERT INTO `intelreports` 
+            ( reporter_id, target_id, text)
+            VALUES 
+            (@reporter_id, @target_id,  @text)";
+
+                using (var cmd = new MySqlCommand(query, _conn))
+                {
+                    cmd.Parameters.AddWithValue("@reporter_id", intelReport.reporter_id);
+                    cmd.Parameters.AddWithValue("@target_id", intelReport.target_id);
+                    cmd.Parameters.AddWithValue("@text", intelReport.text);
+
+                    cmd.ExecuteNonQuery();
+                }
+
+                Console.WriteLine("Row inserted intel report successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error inserting intel report row: " + ex.Message);
+            }
+        }
+
+
+
     }
 }
