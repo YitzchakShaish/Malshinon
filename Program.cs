@@ -10,8 +10,13 @@ namespace Malshinon
     {
         static void Main(string[] args)
         {
-            People p = new People("mm","zz",222, "Reporter");
-            Console.WriteLine(p);
+            //People p = new People("bb","zz", 5, "reporter");
+            //Console.WriteLine(p);
+            ReportDal r = new ReportDal();
+            //r.AddPeople(p);
+            // r.RequestingDataFromDatabase("SELECT  `first_name`, `last_name` FROM `people` WHERE `id`=1");
+            r.InsertName();
+        
         }
     }
 }
