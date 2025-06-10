@@ -151,6 +151,32 @@ namespace Malshinon
                 cmd = new MySqlCommand(query, _conn);
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.ExecuteNonQuery();
+                Console.WriteLine("num mentions  updated successfully.");
+
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error updated num mentions: " + ex.Message);
+            }
+            finally
+            {
+                //if (reader != null && !reader.IsClosed)
+                //    reader.Close();
+                closeConnection();
+            } 
+        }
+        public void UpdatedNumMentions(int id)
+        {
+            string query = "UPDATE `people` SET `num_mentions` = `num_mentions` + 1 WHERE `id` = @id";
+
+            MySqlCommand cmd = null;
+            try
+            {
+                openConnection();
+                cmd = new MySqlCommand(query, _conn);
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
                 Console.WriteLine("Num reports updated successfully.");
 
             }
@@ -164,7 +190,8 @@ namespace Malshinon
                 //if (reader != null && !reader.IsClosed)
                 //    reader.Close();
                 closeConnection();
-            } 
+            }
         }
+
     }
 }
