@@ -96,6 +96,8 @@ namespace Malshinon
         {
             int reporter_id = InsertName();
             Dictionary<int, string> dictMessage = InsertMessage();
+            ReportDal rd = new ReportDal();
+
             int target_id = 0;
             string text ="";
             if (dictMessage.Count == 1)
@@ -104,14 +106,12 @@ namespace Malshinon
                 target_id = pair.Key;
                 text = pair.Value;
             }
-            Console.WriteLine($"reporter_id: {reporter_id}");
-            Console.WriteLine($"target_id: {target_id}");
-            Console.WriteLine($"text: {text}");
-
-        
-
-
-
+            //Console.WriteLine($"reporter_id: {reporter_id}");
+            //Console.WriteLine($"target_id: {target_id}");
+            //Console.WriteLine($"text: {text}");
+            IntelReport newIntelReport = new IntelReport(reporter_id, target_id, text);
+            rd.AddIntelReport(newIntelReport);
+            
     }
     }
 }

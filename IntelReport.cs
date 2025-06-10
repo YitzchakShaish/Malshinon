@@ -8,11 +8,11 @@ namespace Malshinon
 {
     internal class IntelReport
     {
-        int id;
-        int reporter_id;
-        int target_id;
-        string text;
-        DateTime timestamp;
+        public int id;
+        public int reporter_id;
+        public int target_id;
+        public string text;
+        public DateTime timestamp;
 
         public IntelReport(int reporter_id, int target_id, string text)
         {
