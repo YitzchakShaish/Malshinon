@@ -139,32 +139,6 @@ namespace Malshinon
             return id;
         }
 
-        public void InsertName()
-        {
-            Console.WriteLine("enter your fool name; ");
-            string[] foolName = Console.ReadLine().Split();
-            string first_name = foolName[0];
-            string last_name = foolName[1];
-            //Console.WriteLine($"firstname: {first_name}, lastname: {last_name}");
-          
-            int id = RequestingIDFromPeopleTable(first_name);
-            if ( id == -1)
-            {
-                Random rnd = new Random();
-                string secret_code = GenretrRandom.GenerateCode(8);
-                Console.WriteLine("secret_code=: " + secret_code);
-
-                People newP = new People(first_name, last_name, secret_code);
-                AddPeople(newP);
-                Console.WriteLine("A new people has been created successfully.");
-                Console.WriteLine($"Your first name is:{first_name} Your ID is: {RequestingIDFromPeopleTable(first_name)}"); 
-            }
-            else
-            {
-                Console.WriteLine("The people is already in the database.");
-                Console.WriteLine($"Your first name is:{first_name} Your ID is: {RequestingIDFromPeopleTable(first_name)}");
-
-            }
-        }
+     
     }
 }
