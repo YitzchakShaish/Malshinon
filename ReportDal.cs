@@ -80,34 +80,7 @@ namespace Malshinon
                 Console.WriteLine("Error inserting row: " + ex.Message);
             }
         }
-        public void AddPeople2(People people)
-        {
-            try
-            {
-                openConnection();
-
-                string query = $@"
-            INSERT INTO `people` 
-            (first_name, last_name)
-            VALUES 
-            (@first_name, @last_name)";
-
-                using (var cmd = new MySqlCommand(query, _conn))
-                {
-                    cmd.Parameters.AddWithValue("@first_name", people.first_name);
-                    cmd.Parameters.AddWithValue("@last_name", people.last_name);
-
-
-                    cmd.ExecuteNonQuery();
-                }
-
-                Console.WriteLine("Row inserted successfully.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error inserting row: " + ex.Message);
-            }
-        }
+        
         public int RequestingIDFromPeopleTable(string firstName)
         {
             string query = $"SELECT `id`  FROM `people` WHERE `first_name`=@FirstName";
