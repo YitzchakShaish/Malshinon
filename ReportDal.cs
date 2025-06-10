@@ -261,6 +261,38 @@ namespace Malshinon
             }
             return num_reports;
         }
+        public void UpdatedTypePoeple(int id)
+        {
+            string query = "UPDATE `people` SET `type_poeple` = 'potential_agent' WHERE `id` = @id";
+
+            MySqlCommand cmd = null;
+            try
+            {
+                openConnection();
+                cmd = new MySqlCommand(query, _conn);
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+                //Console.WriteLine("type_poeple updated successfully.");
+
+            }
+
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error updated type_poeple: " + ex.Message);
+            }
+            finally
+            {
+                //if (reader != null && !reader.IsClosed)
+                //    reader.Close();
+                closeConnection();
+            }
+        }
+
+        public void TestingPotentialAgent(int id)
+        {
+            if (GetNumReports(id) >= 10 & GetAverageText(id) >= 100)
+                UpdatedTypePoeple(id);
+        }
 
     }
 }
