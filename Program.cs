@@ -15,8 +15,12 @@ namespace Malshinon
             Report r = new Report();
             //r.AddPeople(p);
             // r.RequestingDataFromDatabase("SELECT  `first_name`, `last_name` FROM `people` WHERE `id`=1");
-            r.InsertMessage();
-        
+            // r.InsertNameAndMessage();
+            ReportDal rd = new ReportDal();
+            float f = rd.GetNumReports(11);
+            Console.WriteLine(f);
+            //r.InsertNameAndMessage();
+
         }
     }
 }

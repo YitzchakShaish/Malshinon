@@ -106,12 +106,10 @@ namespace Malshinon
                 target_id = pair.Key;
                 text = pair.Value;
             }
-            //Console.WriteLine($"reporter_id: {reporter_id}");
-            //Console.WriteLine($"target_id: {target_id}");
-            //Console.WriteLine($"text: {text}");
             IntelReport newIntelReport = new IntelReport(reporter_id, target_id, text);
             rd.AddIntelReport(newIntelReport);
-            
+            rd.UpdatedNumReports(reporter_id);
+            rd.UpdatedNumMentions(target_id);
     }
     }
 }

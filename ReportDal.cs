@@ -193,5 +193,74 @@ namespace Malshinon
             }
         }
 
+        public float GetAverageText(int reporter_id)
+        {
+            string query = "SELECT  AVG(LENGTH(text)) avg_text_report FROM intelreports WHERE reporter_ID =  @reporter_id";
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+            //int count_reporter_ID;
+            float avg_text_report= 0;
+
+            try
+            {
+                openConnection();
+                cmd = new MySqlCommand(query, _conn);
+                cmd.Parameters.AddWithValue("@reporter_id", reporter_id);
+                cmd.ExecuteNonQuery();
+                //Console.WriteLine("num mentions  updated successfully.");
+                reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                    avg_text_report = reader.GetInt32("avg_text_report");
+
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error : " + ex.Message);
+            }
+            finally
+            {
+                //if (reader != null && !reader.IsClosed)
+                //    reader.Close();
+                closeConnection();
+            }
+            return avg_text_report;
+            }
+        public float GetNumReports(int id)
+        {
+            string query = "SELECT  num_reports FROM people WHERE id =  @id";
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+            //int count_reporter_ID;
+            int num_reports = 0;
+
+            try
+            {
+                openConnection();
+                cmd = new MySqlCommand(query, _conn);
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+                //Console.WriteLine("num mentions  updated successfully.");
+                reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                    num_reports = reader.GetInt32("num_reports");
+
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error : " + ex.Message);
+            }
+            finally
+            {
+                //if (reader != null && !reader.IsClosed)
+                //    reader.Close();
+                closeConnection();
+            }
+            return num_reports;
+        }
+
     }
 }
