@@ -110,6 +110,7 @@ namespace Malshinon
             rd.AddIntelReport(newIntelReport);
             rd.UpdatedNumReports(reporter_id);
             rd.UpdatedNumMentions(target_id);
+            rd.TestingPotentialAgent(reporter_id);
     }
     }
 }
