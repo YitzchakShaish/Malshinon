@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using MySql.Data.MySqlClient;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -14,10 +15,31 @@ namespace Malshinon
     {
         public int InsertName()
         {
-            Console.WriteLine("enter your fool name; ");
-            string[] foolName = Console.ReadLine().Split();
-            string first_name = foolName[0];
-            string last_name = foolName[1];
+            string first_name = "";
+            string last_name = "";
+            string forbidden_chars = "?!@#$%1234567890";
+
+            while (first_name == ""|| forbidden_chars.Contains(first_name[0])|| first_name.Length < 3)
+            {
+                Console.WriteLine("Enter your full name (first name is required): ");
+                string input = Console.ReadLine();
+
+                string[] pullName = input.Split(' ');
+                if (pullName.Length >= 1)
+                {
+                    first_name = pullName[0];
+                    if (pullName.Length >= 2)
+                        last_name = pullName[1]; 
+                }
+
+                if (first_name == "")
+                {
+                    Console.WriteLine("You must enter at least a first name.");
+                }
+            }
+
+            //Console.WriteLine($"Hello, {first_name} {(string.IsNullOrWhiteSpace(last_name) ? "" : last_name)}!");
+
             ReportDal rd = new ReportDal();
 
             int id = rd.GetPeopleID(first_name);
@@ -25,9 +47,9 @@ namespace Malshinon
             {
 
 
-                People newP = new People(first_name, last_name);
-                newP.CreateSecretCode(first_name);
-                rd.AddPeople(newP);
+                People newPeople = new People(first_name, last_name);
+                newPeople.CreateSecretCode(first_name);
+                rd.AddPeople(newPeople);
 
                 id = rd.GetPeopleID(first_name);
                 Console.WriteLine("A new people has been created successfully.");
@@ -47,31 +69,46 @@ namespace Malshinon
 
         public Dictionary<int, string> InsertMessage()
         {
-            Console.WriteLine("enter your message; ");
-            string message = Console.ReadLine();
-            string[] arrMessage = message.Split();
-            string first_name = null;
-            string last_name = null;
+            string first_name = "";
+            string last_name = "";
             Dictionary<int, string> dictMessage = new Dictionary<int, string>();
-            foreach (string word in arrMessage)
+            string message = "";
+            string forbidden_chars = "?!@#$%1234567890";
+
+            while (first_name == "" || forbidden_chars.Contains(first_name[0]) || first_name.Length < 3)
             {
-                if (char.IsUpper(word[0]) & first_name == null)
+                Console.WriteLine("enter your message: ");
+                message = Console.ReadLine();
+                string[] arrMessage = message.Split();
+                foreach (string word in arrMessage)
                 {
-                    first_name = word;
+                    if (char.IsUpper(word[0]) & first_name == "")
+                    {
+                        first_name = word;
+                    }
+                    else if (char.IsUpper(word[0]))
+                    {
+                        last_name = word;
+                        break;
+                    }
                 }
-                else if (char.IsUpper(word[0]))
+               
+
+                if (first_name == "")
                 {
-                    last_name = word;
-                    break;
+                    Console.WriteLine("You did not enter a name with a capital letter. Please enter your message again:");
                 }
             }
+
+            
+           
             ReportDal rd = new ReportDal();
             int id = rd.GetPeopleID(first_name);
             if (id == -1)
             {
-                People newP = new People(first_name, last_name);
-                newP.CreateSecretCode(first_name);
-                rd.AddPeople(newP);
+                People newPeople = new People(first_name, last_name);
+                newPeople.CreateSecretCode(first_name);
+                rd.AddPeople(newPeople);
                 id = rd.GetPeopleID(first_name);
                 Console.WriteLine("A new people has been created successfully.");
                 Console.WriteLine($"Your first name is:{first_name} Your ID is: {id}");
