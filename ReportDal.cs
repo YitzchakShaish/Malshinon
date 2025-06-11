@@ -136,7 +136,7 @@ namespace Malshinon
                 UpdatedNumMentions(intelReport.target_id);
                 UpdatedTypePoeple(intelReport.target_id, PersonType.target);
                 TestingPotentialAgent(intelReport.reporter_id);
-               
+                TestingIsDangerous(intelReport.target_id);
                 if (GetNumMentions(intelReport.reporter_id) >=1)
                 {
                     UpdatedTypePoeple(intelReport.reporter_id, PersonType.both);
@@ -377,6 +377,42 @@ namespace Malshinon
             if (GetNumReports(id) >= 10 & GetAverageText(id) >= 100)
                 UpdatedTypePoeple(id, PersonType.potential_agent);
         }
+        public void TestingIsDangerous(int id)
+        {
+            int mentions = GetNumMentions(id);
+            if (mentions >= 20)
+            {
+                UpdatedIsDangerous(id);
+                Console.WriteLine($"This terrorist is very dangerous, there are {mentions} reports on him.");
+            }
+        }
+        public void UpdatedIsDangerous(int id)
+        {
+            string query = "UPDATE `intelreports` SET `is_dangerous`= True WHERE `target_id`= @id";
+
+            MySqlCommand cmd = null;
+            try
+            {
+                openConnection();
+                cmd = new MySqlCommand(query, _conn);
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+                //Console.WriteLine("type_poeple updated successfully.");
+
+            }
+
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error updated type_poeple: " + ex.Message);
+            }
+            finally
+            {
+                //if (reader != null && !reader.IsClosed)
+                //    reader.Close();
+                closeConnection();
+            }
+        }
+
 
     }
 }

@@ -12,6 +12,7 @@ namespace Malshinon
         public int reporter_id;
         public int target_id;
         public string text;
+        public bool is_dangerous;
         public DateTime timestamp;
 
         public IntelReport(int reporter_id, int target_id, string text)
