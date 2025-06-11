@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS people (
   id INT AUTO_INCREMENT PRIMARY KEY,
   first_name varchar(50) unique,
   last_name  varchar(50) DEFAULT NULL,
-  secret_code INT unique,
+  secret_code varchar(50) UNIQUE,
   type_poeple ENUM('reporter', 'target', 'both', 'potential_agent') DEFAULT 'reporter',
   num_reports INT DEFAULT 0,
   num_mentions  INT DEFAULT 0
