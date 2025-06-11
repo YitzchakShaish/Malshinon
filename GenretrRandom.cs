@@ -8,10 +8,10 @@ namespace Malshinon
 {
     static class GenretrRandom
     {
-        public static string GenerateCode(int l)
+        public static string GenerateCode(int l, string firstName)
         {
             string lettersAndDigits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
+            string lettersAndName = lettersAndDigits + firstName;
 
             Random rnd = new Random();
             char[] code = new char[l];
@@ -19,7 +19,7 @@ namespace Malshinon
             for (int i = 0; i < l; i++)
             {
 
-                code[i] = lettersAndDigits[rnd.Next(lettersAndDigits.Length)];
+                code[i] = lettersAndName[rnd.Next(lettersAndName.Length)];
             }
 
             return new string(code);
