@@ -12,11 +12,15 @@ namespace Malshinon
         {
             //People p = new People("bb","zz", 5, "reporter");
             //Console.WriteLine(p);
-            ReportDal r = new ReportDal();
+            Report r = new Report();
             //r.AddPeople(p);
             // r.RequestingDataFromDatabase("SELECT  `first_name`, `last_name` FROM `people` WHERE `id`=1");
-            r.InsertName();
-        
+            // r.InsertNameAndMessage();
+            ReportDal rd = new ReportDal();
+            float f = rd.GetNumReports(11);
+            Console.WriteLine(f);
+            //r.InsertNameAndMessage();
+
         }
     }
 }
