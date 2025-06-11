@@ -11,7 +11,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Malshinon
 {
-    internal class Report
+    internal class ReporterAnalysisService
     {
         public int InsertName()
         {
@@ -40,7 +40,7 @@ namespace Malshinon
 
             //Console.WriteLine($"Hello, {first_name} {(string.IsNullOrWhiteSpace(last_name) ? "" : last_name)}!");
 
-            ReportDal rd = new ReportDal();
+            IntelReportDal rd = new IntelReportDal();
 
             int id = rd.GetPeopleID(first_name);
             if (id == -1)
@@ -102,7 +102,7 @@ namespace Malshinon
 
             
            
-            ReportDal rd = new ReportDal();
+            IntelReportDal rd = new IntelReportDal();
             int id = rd.GetPeopleID(first_name);
             if (id == -1)
             {
@@ -127,7 +127,7 @@ namespace Malshinon
         {
             int reporter_id = InsertName();
             Dictionary<int, string> dictMessage = InsertMessage();
-            ReportDal rd = new ReportDal();
+            IntelReportDal rd = new IntelReportDal();
 
 
             var pair = dictMessage.First();
@@ -137,5 +137,7 @@ namespace Malshinon
             IntelReport newIntelReport = new IntelReport(reporter_id, target_id, text);
             rd.AddIntelReport(newIntelReport);
              }
+
+       
     }
 }
