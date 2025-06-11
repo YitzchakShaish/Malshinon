@@ -10,7 +10,7 @@ using Mysqlx.Crud;
 
 namespace Malshinon
 {
-    internal class ReportDal
+    internal class IntelReportDal
     {
         public string connStr = "server=localhost;user=root;password=;database=malshinon";
         private MySqlConnection _conn;
@@ -38,7 +38,7 @@ namespace Malshinon
                 _conn = null;
             }
         }
-        public ReportDal()
+        public IntelReportDal()
         {
             try
             {
@@ -81,7 +81,7 @@ namespace Malshinon
                 Console.WriteLine("Error inserting row: " + ex.Message);
             }
         }
-        
+
         public int GetPeopleID(string firstName)
         {
             string query = $"SELECT `id`  FROM `people` WHERE `first_name`=@FirstName";
@@ -136,8 +136,8 @@ namespace Malshinon
                 UpdatedNumMentions(intelReport.target_id);
                 UpdatedTypePoeple(intelReport.target_id, PersonType.target);
                 TestingPotentialAgent(intelReport.reporter_id);
-               
-                if (GetNumMentions(intelReport.reporter_id) >=1)
+                TestingIsDangerous(intelReport.target_id);
+                if (GetNumMentions(intelReport.reporter_id) >= 1)
                 {
                     UpdatedTypePoeple(intelReport.reporter_id, PersonType.both);
                 }
@@ -177,7 +177,7 @@ namespace Malshinon
                 //if (reader != null && !reader.IsClosed)
                 //    reader.Close();
                 closeConnection();
-            } 
+            }
         }
         public void UpdatedNumMentions(int id)
         {
@@ -212,7 +212,7 @@ namespace Malshinon
             MySqlCommand cmd = null;
             MySqlDataReader reader = null;
             //int count_reporter_ID;
-            float avg_text_report= 0;
+            float avg_text_report = 0;
 
             try
             {
@@ -239,7 +239,7 @@ namespace Malshinon
                 closeConnection();
             }
             return avg_text_report;
-            }
+        }
         public int GetNumReports(int id)
         {
             string query = "SELECT  num_reports FROM people WHERE id =  @id";
@@ -362,7 +362,7 @@ namespace Malshinon
 
             catch (Exception ex)
             {
-                //Console.WriteLine("Error updated type_poeple: " + ex.Message);
+                Console.WriteLine("Error updated type_poeple: " + ex.Message);
             }
             finally
             {
@@ -377,6 +377,89 @@ namespace Malshinon
             if (GetNumReports(id) >= 10 & GetAverageText(id) >= 100)
                 UpdatedTypePoeple(id, PersonType.potential_agent);
         }
+        public void TestingIsDangerous(int id)
+        {
+            int mentions = GetNumMentions(id);
+            if (mentions >= 20)
+            {
+                UpdatedIsDangerous(id);
+                Console.WriteLine($"This terrorist is very dangerous, there are {mentions} reports on him.");
+            }
+        }
+        public void UpdatedIsDangerous(int id)
+        {
+            string query = "UPDATE `intelreports` SET `is_dangerous`= True WHERE `target_id`= @id";
 
+            MySqlCommand cmd = null;
+            try
+            {
+                openConnection();
+                cmd = new MySqlCommand(query, _conn);
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+                //Console.WriteLine("type_poeple updated successfully.");
+
+            }
+
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error updated type_poeple: " + ex.Message);
+            }
+            finally
+            {
+                //if (reader != null && !reader.IsClosed)
+                //    reader.Close();
+                closeConnection();
+            }
+        }
+
+        public void GetDangerousTerrorists()
+        {
+            string query = "SELECT DISTINCT p.first_name, p.last_name,p.num_mentions, i.is_dangerous FROM intelreports i JOIN people p ON i.target_id = p.id WHERE i.is_dangerous = 1;" ;
+            MySqlDataReader reader = null;
+
+            MySqlCommand cmd = null;
+            string first_name;
+            string last_name;
+            int num_mentions;
+
+            try
+            {
+                openConnection();
+                cmd = new MySqlCommand(query, _conn);
+
+                cmd.ExecuteNonQuery();
+                //Console.WriteLine("num mentions  updated successfully.");
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    first_name = reader.GetString("first_name");
+                    last_name = reader.GetString("last_name");
+                    num_mentions = reader.GetInt32("num_mentions");
+                    Console.WriteLine($"The name of the dangerous terrorist is:{first_name}, {last_name} The number of reports is: {num_mentions}");
+                    Console.WriteLine();
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error updated type_poeple: " + ex.Message);
+            }
+            finally
+            {
+                //if (reader != null && !reader.IsClosed)
+                //    reader.Close();
+                closeConnection();
+            }
+        }
+
+        //public  List<People> GetAllPotentialAgents() 
+        //{
+        //    string q = " SELECT MIN(timestamp) AS first_report_time, MAX(timestamp) AS last_report_time FROM intelreports i WHERE i.target_id = @id AND timestamp BETWEEN NOW() -INTERVAL 15 MINUTE AND NOW()  GROUP BY i.target_id HAVING COUNT(*) >= 3; ";
+        //}
     }
+
 }
+

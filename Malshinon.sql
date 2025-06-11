@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS IntelReports  (
   reporter_id INT,
   target_id INT,
   `text` TEXT,
+  is_dangerous BOOLEAN DEFAULT false,
  `timestamp` DATETIME DEFAULT NOW(),
 
   FOREIGN KEY (reporter_id) REFERENCES people (id),
