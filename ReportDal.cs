@@ -82,7 +82,7 @@ namespace Malshinon
             }
         }
         
-        public int RequestingIDFromPeopleTable(string firstName)
+        public int GetPeopleID(string firstName)
         {
             string query = $"SELECT `id`  FROM `people` WHERE `first_name`=@FirstName";
             int id = -1;
@@ -131,6 +131,19 @@ namespace Malshinon
                     cmd.Parameters.AddWithValue("@text", intelReport.text);
 
                     cmd.ExecuteNonQuery();
+                }
+                UpdatedNumReports(intelReport.reporter_id);
+                UpdatedNumMentions(intelReport.target_id);
+                UpdatedTypePoeple(intelReport.target_id, PersonType.target);
+                TestingPotentialAgent(intelReport.reporter_id);
+               
+                if (GetNumMentions(intelReport.reporter_id) >=1)
+                {
+                    UpdatedTypePoeple(intelReport.reporter_id, PersonType.both);
+                }
+                if (GetNumReports(intelReport.target_id) >= 1)
+                {
+                    UpdatedTypePoeple(intelReport.target_id, PersonType.both);
                 }
 
                 Console.WriteLine("Row inserted successfully.");
@@ -227,7 +240,7 @@ namespace Malshinon
             }
             return avg_text_report;
             }
-        public float GetNumReports(int id)
+        public int GetNumReports(int id)
         {
             string query = "SELECT  num_reports FROM people WHERE id =  @id";
             MySqlCommand cmd = null;
@@ -261,9 +274,80 @@ namespace Malshinon
             }
             return num_reports;
         }
-        public void UpdatedTypePoeple(int id)
+        public int GetNumMentions(int id)
         {
-            string query = "UPDATE `people` SET `type_poeple` = 'potential_agent' WHERE `id` = @id";
+            string query = "SELECT  num_mentions FROM people WHERE id =  @id";
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+            //int count_reporter_ID;
+            int num_mentions = 0;
+
+            try
+            {
+                openConnection();
+                cmd = new MySqlCommand(query, _conn);
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+                //Console.WriteLine("num mentions  updated successfully.");
+                reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                    num_mentions = reader.GetInt32("num_mentions");
+
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error : " + ex.Message);
+            }
+            finally
+            {
+                //if (reader != null && !reader.IsClosed)
+                //    reader.Close();
+                closeConnection();
+            }
+            return num_mentions;
+        }
+
+        public string GetPeopleTipe(int id)
+        {
+            string query = "SELECT  type_poeple FROM people WHERE id = @id";
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+            //int count_reporter_ID;
+            string type_poeple = "";
+            //TODO: cheng to persontipe
+
+            try
+            {
+                openConnection();
+                cmd = new MySqlCommand(query, _conn);
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+                //Console.WriteLine("num mentions  updated successfully.");
+                reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                    type_poeple = reader.GetString("type_poeple");
+
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error : " + ex.Message);
+            }
+            finally
+            {
+                //if (reader != null && !reader.IsClosed)
+                //    reader.Close();
+                closeConnection();
+            }
+            return type_poeple;
+        }
+
+        public void UpdatedTypePoeple(int id, PersonType potential_agent)
+        {
+            string query = $"UPDATE `people` SET `type_poeple` = '{potential_agent}' WHERE `id` = @id";
 
             MySqlCommand cmd = null;
             try
@@ -291,7 +375,7 @@ namespace Malshinon
         public void TestingPotentialAgent(int id)
         {
             if (GetNumReports(id) >= 10 & GetAverageText(id) >= 100)
-                UpdatedTypePoeple(id);
+                UpdatedTypePoeple(id, PersonType.potential_agent);
         }
 
     }
