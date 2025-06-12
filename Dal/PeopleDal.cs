@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Google.Protobuf;
+using Malshinon.UI;
 using MySql.Data.MySqlClient;
 
 namespace Malshinon.Dal
@@ -302,8 +303,44 @@ namespace Malshinon.Dal
             }
         }
 
-   
+        public void GetAllPotentialAgents()
+        {
+            string query = "SELECT p.first_name, p.num_reports AVG(LENGTH(i.text)) AS avg_text_length FROM people p JOIN intelreports i ON p.id = i.reporter_id WHERE p.type_poeple = 'potential_agent' GROUP BY p.first_name;";
+            string first_name;
+            int avg_text_length, num_reports;
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+
+            try
+            {
+                _IntelReportDal.openConnection();
+                cmd = new MySqlCommand(query, _IntelReportDal._conn);
+                cmd.ExecuteNonQuery();
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                    ConsoleDisplay.AllPotentialAgents(
+                    first_name = reader.GetString("first_name"),
+                    num_reports = reader.GetInt32("num_reports"),
+                    avg_text_length = reader.GetInt32("avg_text_length")
+                );
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error : " + ex.Message);
+            }
+            finally
+            {
+                //if (reader != null && !reader.IsClosed)
+                //    reader.Close();
+                _IntelReportDal.closeConnection();
+            }
+           
+        }
+
+    }
 
 
     }
-}
+
