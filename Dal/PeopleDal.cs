@@ -256,20 +256,7 @@ namespace Malshinon.Dal
             }
         }
 
-        public void TestingPotentialAgent(int id)
-        {
-            if (GetNumReports(id) >= 10 & _IntelReportDal.GetAverageText(id) >= 100)
-                UpdatedTypePoeple(id, PersonType.potential_agent);
-        }
-        public void TestingIsDangerous(int id)
-        {
-            int mentions = GetNumMentions(id);
-            if (mentions >= 20)
-            {
-                _IntelReportDal.UpdatedIsDangerous(id);
-                Console.WriteLine($"This terrorist is very dangerous, there are {mentions} reports on him.");
-            }
-        }
+   
 
 
     }
