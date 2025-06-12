@@ -28,7 +28,7 @@ namespace Malshinon.Dal
             if (_conn.State != System.Data.ConnectionState.Open)
             {
                 _conn.Open();
-                Console.WriteLine("Connection successful.");
+                //Console.WriteLine("Connection successful.");
             }
 
             return _conn;
@@ -81,7 +81,9 @@ namespace Malshinon.Dal
                     cmd.ExecuteNonQuery();
                 }
                 _PeopleDal.UpdatedNumReports(intelReport.reporter_id);
+                Console.WriteLine("AAAAAAAAAAAAAAA");
                 _PeopleDal.UpdatedNumMentions(intelReport.target_id);
+Console.WriteLine("BBBBBBBBBBBBBBBBBBBBBBB");
                 _PeopleDal.UpdatedTypePoeple(intelReport.target_id, PersonType.target);
                 _ReporterAnalysisService.TestingPotentialAgent(intelReport.reporter_id);
                 _ReporterAnalysisService.TestingIsDangerous(intelReport.target_id);

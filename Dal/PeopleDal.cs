@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Google.Protobuf;
 using MySql.Data.MySqlClient;
 
 namespace Malshinon.Dal
@@ -42,7 +43,7 @@ namespace Malshinon.Dal
             }
         }
 
-        public int GetPeopleID(string firstName)
+        public int GetPeopleIDByFirstName(string firstName)
         {
             string query = $"SELECT `id`  FROM `people` WHERE `first_name`=@FirstName";
             int id = -1;
@@ -72,6 +73,51 @@ namespace Malshinon.Dal
             }
             return id;
         }
+        public People GetPeopleByID(int id)
+        {
+            string query = $"SELECT *  FROM `people` WHERE `id`=@id";
+            string first_name, last_name, secret_code;
+            int num_reports, num_mentions;
+            PersonType type_poeple;
+            People newPeople = new People();
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+            try
+            {
+                _IntelReportDal.openConnection();
+                cmd = new MySqlCommand(query, _IntelReportDal._conn);
+                cmd.Parameters.AddWithValue("@id", id);
+
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    newPeople = new People
+                    {
+                        id = id,
+                        first_name = reader.GetString("first_name"),
+                        last_name = reader.GetString("last_name"),
+                        secret_code = reader.GetString("secret_code"),
+                        type_poeple = (PersonType)Enum.Parse(typeof(PersonType), reader.GetString("type_poeple")),
+                        num_reports = reader.GetInt32("num_reports"),
+                        num_mentions = reader.GetInt32("num_mentions")
+                    };     
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: Data not received. " + ex.Message);
+            }
+            finally
+            {
+                if (reader != null && !reader.IsClosed)
+                    reader.Close();
+                _IntelReportDal.closeConnection();
+            }
+            return newPeople;
+        }
+
         public void UpdatedNumReports(int id)
         {
             string query = "UPDATE `people` SET `num_reports` = `num_reports` + 1 WHERE `id` = @id";
