@@ -197,10 +197,10 @@ namespace Malshinon.Dal
             }
         }
 
-        //public  List<People> GetAllPotentialAgents() 
-        //{
-        //    string q = " SELECT MIN(timestamp) AS first_report_time, MAX(timestamp) AS last_report_time FROM intelreports i WHERE i.target_id = @id AND timestamp BETWEEN NOW() -INTERVAL 15 MINUTE AND NOW()  GROUP BY i.target_id HAVING COUNT(*) >= 3; ";
-        //}
+
+        //alert
+        //string q = " SELECT MIN(timestamp) AS first_report_time, MAX(timestamp) AS last_report_time FROM intelreports i WHERE i.target_id = @id AND timestamp BETWEEN NOW() -INTERVAL 15 MINUTE AND NOW()  GROUP BY i.target_id HAVING COUNT(*) >= 3; ";
+
     }
 
 }
