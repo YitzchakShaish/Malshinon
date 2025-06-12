@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Malshinon.Dal;
+using Malshinon.UI;
 using MySql.Data.MySqlClient;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -45,22 +46,18 @@ namespace Malshinon
 
             PeopleDal _PeopleDal = new PeopleDal();
 
-            int id = _PeopleDal.GetPeopleID(first_name);
+            int id = _PeopleDal.GetPeopleIDByFirstName(first_name);
             if (id == -1)
             {
-
-
                 People newPeople = new People(first_name, last_name);
                 newPeople.CreateSecretCode(first_name);
                 _PeopleDal.AddPeople(newPeople);
-
-                id = _PeopleDal.GetPeopleID(first_name);
-                Console.WriteLine("A new people has been created successfully.");
-                Console.WriteLine($"Your first name is:{first_name} Your ID is: {id}");
+                newPeople.id = _PeopleDal.GetPeopleIDByFirstName(first_name);
+                ConsoleDisplay.PeopleCreatedSuccessfully(newPeople);
             }
             else
             {
-                id = _PeopleDal.GetPeopleID(first_name);
+                id = _PeopleDal.GetPeopleIDByFirstName(first_name);
 
                 Console.WriteLine("The people is already in the database.");
                 Console.WriteLine($"Your first name is:{first_name} Your ID is: {id}");
@@ -108,19 +105,18 @@ namespace Malshinon
 
 
             PeopleDal _PeopleDal = new PeopleDal();
-            int id = _PeopleDal.GetPeopleID(first_name);
+            int id = _PeopleDal.GetPeopleIDByFirstName(first_name);
             if (id == -1)
             {
                 People newPeople = new People(first_name, last_name);
                 newPeople.CreateSecretCode(first_name);
                 _PeopleDal.AddPeople(newPeople);
-                id = _PeopleDal.GetPeopleID(first_name);
-                Console.WriteLine("A new people has been created successfully.");
-                Console.WriteLine($"Your first name is:{first_name} Your ID is: {id}");
+                id = _PeopleDal.GetPeopleIDByFirstName(first_name);
+                ConsoleDisplay.PeopleCreatedSuccessfully(newPeople);
             }
             else
             {
-                id = _PeopleDal.GetPeopleID(first_name);
+                id = _PeopleDal.GetPeopleIDByFirstName(first_name);
 
                 Console.WriteLine("The people is already in the database.");
                 Console.WriteLine($"Your first name is:{first_name} Your ID is: {id}");

@@ -22,8 +22,8 @@ namespace Malshinon
         public   PersonType type_poeple { get; set; }
         public int num_reports { get; set; } = 0;
         public int num_mentions { get; set; } = 0;
-    
-    public People(string first_name,string last_name, string secret_code)
+
+        public People(string first_name, string last_name, string secret_code)
         {
             this.first_name = first_name;
             this.last_name = last_name;
@@ -35,10 +35,13 @@ namespace Malshinon
             this.first_name = first_name;
             this.last_name = last_name;
         }
+        public People()
+        {
+            
+        }
         public void CreateSecretCode(string firstName)
         {
             string newSecretCode  = GenretrRandom.GenerateCode(8,firstName);
-            Console.WriteLine("secret_code=: " + secret_code);
             secret_code = newSecretCode;
         }
         public override string ToString()

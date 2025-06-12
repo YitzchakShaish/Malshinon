@@ -97,7 +97,7 @@
   <ItemGroup>
     <Compile Include="Dal\AlertDal.cs" />
     <Compile Include="Dal\PeopleDal.cs" />
-    <Compile Include="GenretrRandom.cs" />
+    <Compile Include="Models\GenretrRandom.cs" />
     <Compile Include="Models\IntelReport.cs" />
     <Compile Include="Models\People.cs" />
     <Compile Include="Program.cs" />
@@ -105,6 +105,7 @@
     <Compile Include="Services\ReporterAnalysisService.cs" />
     <Compile Include="Services\IntelSubmissionService.cs" />
     <Compile Include="Dal\IntelReportDal.cs" />
+    <Compile Include="UI\ConsoleDisplay.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

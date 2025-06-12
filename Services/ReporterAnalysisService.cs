@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Malshinon.Dal;
+using Malshinon.UI;
 
 namespace Malshinon.Services
 {
@@ -14,7 +15,10 @@ namespace Malshinon.Services
             IntelReportDal _IntelReportDal = new IntelReportDal();
             PeopleDal _PeopleDal = new PeopleDal();
             if (_PeopleDal.GetNumReports(id) >= 10 & _IntelReportDal.GetAverageText(id) >= 100)
+            { 
                 _PeopleDal.UpdatedTypePoeple(id, PersonType.potential_agent);
+                ConsoleDisplay.ChangeStatusPotentialAgent(_PeopleDal.GetPeopleByID(id));
+            }
         }
         public void TestingIsDangerous(int id)
         {
@@ -24,7 +28,7 @@ namespace Malshinon.Services
             if (mentions >= 20)
             {
                 _IntelReportDal.UpdatedIsDangerous(id);
-                Console.WriteLine($"This terrorist is very dangerous, there are {mentions} reports on him.");
+                ConsoleDisplay.IsDangerous(_PeopleDal.GetPeopleByID(id));
             }
         }
         public void TestingUpdateBoth(int id)
