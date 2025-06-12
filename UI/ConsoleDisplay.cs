@@ -33,5 +33,11 @@ namespace Malshinon.UI
 
             Console.WriteLine($"This terrorist { people.first_name} is very dangerous, there are {people.num_mentions} reports on him.");
         }
+        public static void AllPotentialAgents(string firstName, int num_reports, float avg_text_length)
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine($"****Potential Agent*** First Name:{firstName} Number of Reports: {num_reports} Average Report Text: {avg_text_length} ");
+            Console.ResetColor();
+        }
     }
 }
