@@ -58,7 +58,7 @@ namespace Malshinon.Dal
                 Console.WriteLine($"General Error: {ex.Message}");
             }
         }
-   public void AddIntelReport(IntelReport intelReport)
+   public void InsertNewIntelReport(IntelReport intelReport)
         {
             PeopleDal _PeopleDal = new PeopleDal();
             ReporterAnalysisService _ReporterAnalysisService = new ReporterAnalysisService();

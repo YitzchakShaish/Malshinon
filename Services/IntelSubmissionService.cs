@@ -136,7 +136,7 @@ namespace Malshinon
             string text = pair.Value;
 
             IntelReport newIntelReport = new IntelReport(reporter_id, target_id, text);
-            rd.AddIntelReport(newIntelReport);
+            rd.InsertNewIntelReport(newIntelReport);
         }
 
 
