@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using Mysqlx.Crud;
 using Malshinon.Services;
+using Malshinon.UI;
 
 
 
@@ -81,16 +82,14 @@ namespace Malshinon.Dal
                     cmd.ExecuteNonQuery();
                 }
                 _PeopleDal.UpdatedNumReports(intelReport.reporter_id);
-                Console.WriteLine("AAAAAAAAAAAAAAA");
                 _PeopleDal.UpdatedNumMentions(intelReport.target_id);
-Console.WriteLine("BBBBBBBBBBBBBBBBBBBBBBB");
                 _PeopleDal.UpdatedTypePoeple(intelReport.target_id, PersonType.target);
                 _ReporterAnalysisService.TestingPotentialAgent(intelReport.reporter_id);
                 _ReporterAnalysisService.TestingIsDangerous(intelReport.target_id);
                 _ReporterAnalysisService.TestingUpdateBoth(intelReport.reporter_id);
                 _ReporterAnalysisService.TestingUpdateBoth(intelReport.target_id);
-               // Console.WriteLine("Row inserted successfully.");
-            }
+                ConsoleDisplay.IntelReportCreatedSuccessfully(intelReport);
+                    }
             catch (Exception ex)
             {
                 Console.WriteLine("Error inserting intel report row: " + ex.Message);

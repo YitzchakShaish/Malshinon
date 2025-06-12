@@ -16,6 +16,13 @@ namespace Malshinon.UI
             Console.ResetColor();
 
         }
+        public static void IntelReportCreatedSuccessfully(IntelReport intelReport)
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("A new intelReport has been created successfully.");
+            Console.WriteLine($"Your target ID is:{intelReport.target_id} Your massage is: {intelReport.text}");
+            Console.ResetColor();
+        }
         public static void ChangeStatusPotentialAgent(People people)
         {
             
