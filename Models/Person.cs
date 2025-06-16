@@ -13,32 +13,35 @@ namespace Malshinon
         both,
         potential_agent
     }
-    internal class People
+    internal class Person
     {
-     public   int id;
-     public   string first_name;
-     public   string last_name;
-     public   string secret_code;
-     public   PersonType type_poeple;
-     public   int num_reports = 0;
-     public   int num_mentions = 0;
-    
-    public People(string first_name,string last_name, string secret_code)
+     public   int id { get; set; }
+     public   string first_name { get; set; }
+        public   string last_name { get; set; }
+        public   string secret_code { get; set; }
+        public   PersonType type_poeple { get; set; }
+        public int num_reports { get; set; } = 0;
+        public int num_mentions { get; set; } = 0;
+
+        public Person(string first_name, string last_name, string secret_code)
         {
             this.first_name = first_name;
             this.last_name = last_name;
             this.secret_code = secret_code;
         }
 
-        public People(string first_name, string last_name)
+        public Person(string first_name, string last_name)
         {
             this.first_name = first_name;
             this.last_name = last_name;
         }
+        public Person()
+        {
+            
+        }
         public void CreateSecretCode(string firstName)
         {
             string newSecretCode  = GenretrRandom.GenerateCode(8,firstName);
-            Console.WriteLine("secret_code=: " + secret_code);
             secret_code = newSecretCode;
         }
         public override string ToString()

@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using Mysqlx.Crud;
+using Malshinon.Services;
+using Malshinon.UI;
+
 
 
 namespace Malshinon.Dal
@@ -26,7 +29,7 @@ namespace Malshinon.Dal
             if (_conn.State != System.Data.ConnectionState.Open)
             {
                 _conn.Open();
-                Console.WriteLine("Connection successful.");
+                //Console.WriteLine("Connection successful.");
             }
 
             return _conn;
@@ -55,9 +58,10 @@ namespace Malshinon.Dal
                 Console.WriteLine($"General Error: {ex.Message}");
             }
         }
-   public void AddIntelReport(IntelReport intelReport)
+   public void InsertNewIntelReport(IntelReport intelReport)
         {
             PeopleDal _PeopleDal = new PeopleDal();
+            ReporterAnalysisService _ReporterAnalysisService = new ReporterAnalysisService();
 
             try
             {
@@ -80,19 +84,12 @@ namespace Malshinon.Dal
                 _PeopleDal.UpdatedNumReports(intelReport.reporter_id);
                 _PeopleDal.UpdatedNumMentions(intelReport.target_id);
                 _PeopleDal.UpdatedTypePoeple(intelReport.target_id, PersonType.target);
-                _PeopleDal.TestingPotentialAgent(intelReport.reporter_id);
-                _PeopleDal.TestingIsDangerous(intelReport.target_id);
-                if (_PeopleDal.GetNumMentions(intelReport.reporter_id) >= 1)
-                {
-                    _PeopleDal.UpdatedTypePoeple(intelReport.reporter_id, PersonType.both);
-                }
-                if (_PeopleDal.GetNumReports(intelReport.target_id) >= 1)
-                {
-                    _PeopleDal.UpdatedTypePoeple(intelReport.target_id, PersonType.both);
-                }
-
-                Console.WriteLine("Row inserted successfully.");
-            }
+                _ReporterAnalysisService.TestingPotentialAgent(intelReport.reporter_id);
+                _ReporterAnalysisService.TestingIsDangerous(intelReport.target_id);
+                _ReporterAnalysisService.TestingUpdateBoth(intelReport.reporter_id);
+                _ReporterAnalysisService.TestingUpdateBoth(intelReport.target_id);
+                ConsoleDisplay.IntelReportCreatedSuccessfully(intelReport);
+                    }
             catch (Exception ex)
             {
                 Console.WriteLine("Error inserting intel report row: " + ex.Message);
@@ -161,9 +158,8 @@ namespace Malshinon.Dal
 
         public void GetDangerousTerrorists()
         {
-            string query = "SELECT DISTINCT p.first_name, p.last_name,p.num_mentions, i.is_dangerous FROM intelreports i JOIN people p ON i.target_id = p.id WHERE i.is_dangerous = 1;" ;
+            string query = "SELECT DISTINCT p.first_name,p.num_mentions, i.is_dangerous FROM intelreports i JOIN people p ON i.target_id = p.id WHERE i.is_dangerous = 1;" ;
             MySqlDataReader reader = null;
-
             MySqlCommand cmd = null;
             string first_name;
             string last_name;
@@ -180,18 +176,17 @@ namespace Malshinon.Dal
 
                 while (reader.Read())
                 {
-                    first_name = reader.GetString("first_name");
-                    last_name = reader.GetString("last_name");
-                    num_mentions = reader.GetInt32("num_mentions");
-                    Console.WriteLine($"The name of the dangerous terrorist is:{first_name}, {last_name} The number of reports is: {num_mentions}");
-                    Console.WriteLine();
+                    ConsoleDisplay.AllDangerousTerrorists(
+                    first_name = reader.GetString("first_name"),
 
+                    num_mentions = reader.GetInt32("num_mentions")
+                    );
                 }
             }
 
             catch (Exception ex)
             {
-                Console.WriteLine("Error updated type_poeple: " + ex.Message);
+                Console.WriteLine("Error GetDangerousTerrorists: " + ex.Message);
             }
             finally
             {
@@ -201,10 +196,10 @@ namespace Malshinon.Dal
             }
         }
 
-        //public  List<People> GetAllPotentialAgents() 
-        //{
-        //    string q = " SELECT MIN(timestamp) AS first_report_time, MAX(timestamp) AS last_report_time FROM intelreports i WHERE i.target_id = @id AND timestamp BETWEEN NOW() -INTERVAL 15 MINUTE AND NOW()  GROUP BY i.target_id HAVING COUNT(*) >= 3; ";
-        //}
+
+        //alert
+        //string q = " SELECT MIN(timestamp) AS first_report_time, MAX(timestamp) AS last_report_time FROM intelreports i WHERE i.target_id = @id AND timestamp BETWEEN NOW() -INTERVAL 15 MINUTE AND NOW()  GROUP BY i.target_id HAVING COUNT(*) >= 3; ";
+
     }
 
 }

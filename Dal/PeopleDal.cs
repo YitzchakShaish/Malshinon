@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Google.Protobuf;
+using Malshinon.UI;
 using MySql.Data.MySqlClient;
 
 namespace Malshinon.Dal
@@ -13,7 +15,7 @@ namespace Malshinon.Dal
         IntelReportDal _IntelReportDal = new IntelReportDal();
 
 
-        public void AddPeople(People people)
+        public void InsertPerson(Person person)
         {
             try
             {
@@ -27,9 +29,9 @@ namespace Malshinon.Dal
 
                 using (var cmd = new MySqlCommand(query, _IntelReportDal._conn))
                 {
-                    cmd.Parameters.AddWithValue("@first_name", people.first_name);
-                    cmd.Parameters.AddWithValue("@last_name", people.last_name);
-                    cmd.Parameters.AddWithValue("@secret_code", people.secret_code);
+                    cmd.Parameters.AddWithValue("@first_name", person.first_name);
+                    cmd.Parameters.AddWithValue("@last_name", person.last_name);
+                    cmd.Parameters.AddWithValue("@secret_code", person.secret_code);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -42,7 +44,7 @@ namespace Malshinon.Dal
             }
         }
 
-        public int GetPeopleID(string firstName)
+        public int GetPeopleIDByFirstName(string firstName)
         {
             string query = $"SELECT `id`  FROM `people` WHERE `first_name`=@FirstName";
             int id = -1;
@@ -72,6 +74,51 @@ namespace Malshinon.Dal
             }
             return id;
         }
+        public Person GetPersonByID(int id)
+        {
+            string query = $"SELECT *  FROM `people` WHERE `id`=@id";
+            string first_name, last_name, secret_code;
+            int num_reports, num_mentions;
+            PersonType type_poeple;
+            Person newPeople = new Person();
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+            try
+            {
+                _IntelReportDal.openConnection();
+                cmd = new MySqlCommand(query, _IntelReportDal._conn);
+                cmd.Parameters.AddWithValue("@id", id);
+
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    newPeople = new Person
+                    {
+                        id = id,
+                        first_name = reader.GetString("first_name"),
+                        last_name = reader.GetString("last_name"),
+                        secret_code = reader.GetString("secret_code"),
+                        type_poeple = (PersonType)Enum.Parse(typeof(PersonType), reader.GetString("type_poeple")),
+                        num_reports = reader.GetInt32("num_reports"),
+                        num_mentions = reader.GetInt32("num_mentions")
+                    };     
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: Data not received. " + ex.Message);
+            }
+            finally
+            {
+                if (reader != null && !reader.IsClosed)
+                    reader.Close();
+                _IntelReportDal.closeConnection();
+            }
+            return newPeople;
+        }
+
         public void UpdatedNumReports(int id)
         {
             string query = "UPDATE `people` SET `num_reports` = `num_reports` + 1 WHERE `id` = @id";
@@ -256,21 +303,45 @@ namespace Malshinon.Dal
             }
         }
 
-        public void TestingPotentialAgent(int id)
+        public void GetAllPotentialAgents()
         {
-            if (GetNumReports(id) >= 10 & _IntelReportDal.GetAverageText(id) >= 100)
-                UpdatedTypePoeple(id, PersonType.potential_agent);
-        }
-        public void TestingIsDangerous(int id)
-        {
-            int mentions = GetNumMentions(id);
-            if (mentions >= 20)
+            string query = "SELECT p.first_name,  p.num_reports,    AVG(LENGTH(i.text)) AS avg_text_length FROM   people p JOIN    intelreports i ON p.id = i.reporter_id WHERE    p.type_poeple = 'potential_agent' GROUP BY    p.first_name, p.num_reports; ";
+            string first_name;
+            int avg_text_length, num_reports;
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+
+            try
             {
-                _IntelReportDal.UpdatedIsDangerous(id);
-                Console.WriteLine($"This terrorist is very dangerous, there are {mentions} reports on him.");
+                _IntelReportDal.openConnection();
+                cmd = new MySqlCommand(query, _IntelReportDal._conn);
+                cmd.ExecuteNonQuery();
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                    ConsoleDisplay.AllPotentialAgents(
+                    first_name = reader.GetString("first_name"),
+                    num_reports = reader.GetInt32("num_reports"),
+                    avg_text_length = reader.GetInt32("avg_text_length")
+                );
+                ConsoleDisplay.ResetHeader();
             }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error : " + ex.Message);
+            }
+            finally
+            {
+                //if (reader != null && !reader.IsClosed)
+                //    reader.Close();
+                _IntelReportDal.closeConnection();
+            }
+           
         }
+
+    }
 
 
     }
-}
+

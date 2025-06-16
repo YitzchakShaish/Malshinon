@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Malshinon.Dal;
+using Malshinon.UI;
 using MySql.Data.MySqlClient;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -14,7 +15,12 @@ namespace Malshinon
 {
     internal class IntelSubmissionService
     {
-        public int InsertName()
+        /// <summary>
+        /// Requests the user's first and last name from the console, 
+        /// checks if the person exists in the database, and creates a new record if not.
+        /// </summary'[\
+        /// <returns>The ID of the reporter (person).</returns>
+        public int GetOrCreateReporter()
         {
             string first_name = "";
             string last_name = "";
@@ -25,12 +31,12 @@ namespace Malshinon
                 Console.WriteLine("Enter your full name (first name is required): ");
                 string input = Console.ReadLine();
 
-                string[] pullName = input.Split(' ');
-                if (pullName.Length >= 1)
+                string[] nameParts = input.Split(' ');
+                if (nameParts.Length >= 1)
                 {
-                    first_name = pullName[0];
-                    if (pullName.Length >= 2)
-                        last_name = pullName[1];
+                    first_name = nameParts[0];
+                    if (nameParts.Length >= 2)
+                        last_name = nameParts[1];
                 }
 
                 if (first_name == "")
@@ -41,26 +47,18 @@ namespace Malshinon
                 }
             }
 
-            //Console.WriteLine($"Hello, {first_name} {(string.IsNullOrWhiteSpace(last_name) ? "" : last_name)}!");
-
             PeopleDal _PeopleDal = new PeopleDal();
 
-            int id = _PeopleDal.GetPeopleID(first_name);
+            int id = _PeopleDal.GetPeopleIDByFirstName(first_name);
             if (id == -1)
             {
+                Person newPerson = CreateNewPerson(first_name, last_name);
+                id = _PeopleDal.GetPeopleIDByFirstName(first_name);
 
-
-                People newPeople = new People(first_name, last_name);
-                newPeople.CreateSecretCode(first_name);
-                _PeopleDal.AddPeople(newPeople);
-
-                id = _PeopleDal.GetPeopleID(first_name);
-                Console.WriteLine("A new people has been created successfully.");
-                Console.WriteLine($"Your first name is:{first_name} Your ID is: {id}");
             }
             else
             {
-                id = _PeopleDal.GetPeopleID(first_name);
+                id = _PeopleDal.GetPeopleIDByFirstName(first_name);
 
                 Console.WriteLine("The people is already in the database.");
                 Console.WriteLine($"Your first name is:{first_name} Your ID is: {id}");
@@ -70,7 +68,7 @@ namespace Malshinon
 
         }
 
-        public Dictionary<int, string> InsertMessage()
+        public Dictionary<int, string> GetOrCreateTargetMessage()
         {
             string first_name = "";
             string last_name = "";
@@ -108,41 +106,53 @@ namespace Malshinon
 
 
             PeopleDal _PeopleDal = new PeopleDal();
-            int id = _PeopleDal.GetPeopleID(first_name);
+            int id = _PeopleDal.GetPeopleIDByFirstName(first_name);
             if (id == -1)
             {
-                People newPeople = new People(first_name, last_name);
-                newPeople.CreateSecretCode(first_name);
-                _PeopleDal.AddPeople(newPeople);
-                id = _PeopleDal.GetPeopleID(first_name);
-                Console.WriteLine("A new people has been created successfully.");
-                Console.WriteLine($"Your first name is:{first_name} Your ID is: {id}");
+                Person newPerson = CreateNewPerson(first_name, last_name);
+                id = _PeopleDal.GetPeopleIDByFirstName(first_name);
             }
+
             else
             {
-                id = _PeopleDal.GetPeopleID(first_name);
+                id = _PeopleDal.GetPeopleIDByFirstName(first_name);
 
                 Console.WriteLine("The people is already in the database.");
                 Console.WriteLine($"Your first name is:{first_name} Your ID is: {id}");
             }
+         
             dictMessage[id] = message;
             return dictMessage;
         }
-        public void InsertNameAndMessage()
+        public void SubmitIntelReport()
         {
-            int reporter_id = InsertName();
-            Dictionary<int, string> dictMessage = InsertMessage();
+            int reporter_id = GetOrCreateReporter();
+            Dictionary<int, string> dictMessage = GetOrCreateTargetMessage();
             IntelReportDal rd = new IntelReportDal();
 
 
             var pair = dictMessage.First();
             int target_id = pair.Key;
             string text = pair.Value;
+            Console.WriteLine($"reporter_id: {reporter_id}, target_id: {target_id},  text: {text}");
 
             IntelReport newIntelReport = new IntelReport(reporter_id, target_id, text);
-            rd.AddIntelReport(newIntelReport);
+            rd.InsertNewIntelReport(newIntelReport);
         }
 
+        private Person CreateNewPerson(string firstName, string lastName)
+        {
+            Person newPerson = new Person(firstName, lastName);
+            newPerson.CreateSecretCode(firstName);
+
+            PeopleDal _peopleDal = new PeopleDal();
+            _peopleDal.InsertPerson(newPerson);
+
+            newPerson.id = _peopleDal.GetPeopleIDByFirstName(firstName);
+            ConsoleDisplay.PeopleCreatedSuccessfully(newPerson);
+
+            return newPerson;
+        }
 
     }
 }
