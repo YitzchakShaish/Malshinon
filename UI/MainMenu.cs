@@ -59,39 +59,7 @@ namespace Malshinon.UI
             Console.WriteLine(new string('═', 50));
         }
 
-        private  void ShowPotentialAgents()
-        {
-            Console.Clear();
-            PrintHeader("🧩 Potential Agents");
-            Console.WriteLine("Name           | Reports Count | Avg. Report Length");
-            Console.WriteLine("-----------------------------------------------------");
-            // Replace this with real DB data
-            Console.WriteLine("John Doe       | 5             | 123 characters");
-            Console.WriteLine("Jane Smith     | 3             | 98 characters");
-            ReturnToMenu();
-        }
-
-        private  void ShowDangerousTargets()
-        {
-            Console.Clear();
-            PrintHeader("Dangerous Targets");
-            Console.WriteLine("Name           | Mention Count");
-            Console.WriteLine("--------------------------------");
-            Console.WriteLine("Alpha Zone     | 12");
-            Console.WriteLine("Bravo Squad    | 9");
-            ReturnToMenu();
-        }
-
-        private  void ShowActivityAlerts()
-        {
-            Console.Clear();
-            PrintHeader("🚨 Activity Alerts");
-            Console.WriteLine("Target         | Date         | Description");
-            Console.WriteLine("-----------------------------------------------");
-            Console.WriteLine("Alpha Zone     | 2025-06-12   | Suspicious movement detected");
-            Console.WriteLine("Bravo Squad    | 2025-06-11   | Communication intercepted");
-            ReturnToMenu();
-        }
+     
 
         private  void ReturnToMenu()
         {
