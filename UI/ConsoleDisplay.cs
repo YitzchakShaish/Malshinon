@@ -8,11 +8,11 @@ namespace Malshinon.UI
 {
     static class ConsoleDisplay
     {
-        public static void PeopleCreatedSuccessfully(People people)
+        public static void PeopleCreatedSuccessfully(Person person)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("A new people has been created successfully.");
-            Console.WriteLine($"Your first name is:{people.first_name} Your ID is: {people.id}");
+            Console.WriteLine("A new person has been created successfully.");
+            Console.WriteLine($"Your first name is:{person.first_name} Your ID is: {person.id}");
             Console.ResetColor();
 
         }
@@ -23,21 +23,50 @@ namespace Malshinon.UI
             Console.WriteLine($"Your target ID is:{intelReport.target_id} Your massage is: {intelReport.text}");
             Console.ResetColor();
         }
-        public static void ChangeStatusPotentialAgent(People people)
+        public static void ChangeStatusPotentialAgent(Person person)
         {
             
-            Console.WriteLine($"The man named:{people.first_name} defined as: {people.type_poeple} has {people.num_reports} reports on him.");
+            Console.WriteLine($"The man named:{person.first_name} defined as: {person.type_poeple} has {person.num_reports} reports on him.");
         }
-        public static void IsDangerous(People people)
+        public static void IsDangerous(Person person)
         {
 
-            Console.WriteLine($"This terrorist { people.first_name} is very dangerous, there are {people.num_mentions} reports on him.");
+            Console.WriteLine($"This terrorist { person.first_name} is very dangerous, there are {person.num_mentions} reports on him.");
         }
+        private static bool headerPrinted = false;
+
         public static void AllPotentialAgents(string firstName, int num_reports, float avg_text_length)
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"****Potential Agent*** First Name:{firstName} Number of Reports: {num_reports} Average Report Text: {avg_text_length} ");
+            if (!headerPrinted)
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(new string('═', 50));
+                Console.WriteLine(String.Format("{0,-20} | {1,-15} | {2,-15}", "First Name", "Reports", "Avg. Length"));
+                Console.WriteLine(new string('═', 50));
+                headerPrinted = true;
+            }
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(String.Format("{0,-20} | {1,-15} | {2,-15:N1}", firstName, num_reports, avg_text_length));
             Console.ResetColor();
+        }
+        public static void AllDangerousTerrorists(string firstName, int num_mentions)
+        {
+            if (!headerPrinted)
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(new string('═', 50));
+                Console.WriteLine(String.Format("{0,-30} | {1,-15} ", "First Name", "num_mentions"));
+                Console.WriteLine(new string('═', 50));
+                headerPrinted = true;
+            }
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(String.Format("{0,-30} | {1,-15} ", firstName, num_mentions));
+            Console.ResetColor();
+        }
+
+        public static void ResetHeader()
+        {
+            headerPrinted = false;
         }
     }
 }

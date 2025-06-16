@@ -17,7 +17,7 @@ namespace Malshinon.Services
             if (_PeopleDal.GetNumReports(id) >= 10 & _IntelReportDal.GetAverageText(id) >= 100)
             { 
                 _PeopleDal.UpdatedTypePoeple(id, PersonType.potential_agent);
-                ConsoleDisplay.ChangeStatusPotentialAgent(_PeopleDal.GetPeopleByID(id));
+                ConsoleDisplay.ChangeStatusPotentialAgent(_PeopleDal.GetPersonByID(id));
             }
         }
         public void TestingIsDangerous(int id)
@@ -28,7 +28,7 @@ namespace Malshinon.Services
             if (mentions >= 20)
             {
                 _IntelReportDal.UpdatedIsDangerous(id);
-                ConsoleDisplay.IsDangerous(_PeopleDal.GetPeopleByID(id));
+                ConsoleDisplay.IsDangerous(_PeopleDal.GetPersonByID(id));
             }
         }
         public void TestingUpdateBoth(int id)
