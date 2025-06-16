@@ -15,7 +15,7 @@ namespace Malshinon.Dal
         IntelReportDal _IntelReportDal = new IntelReportDal();
 
 
-        public void AddPeople(People people)
+        public void InsertPerson(Person person)
         {
             try
             {
@@ -29,9 +29,9 @@ namespace Malshinon.Dal
 
                 using (var cmd = new MySqlCommand(query, _IntelReportDal._conn))
                 {
-                    cmd.Parameters.AddWithValue("@first_name", people.first_name);
-                    cmd.Parameters.AddWithValue("@last_name", people.last_name);
-                    cmd.Parameters.AddWithValue("@secret_code", people.secret_code);
+                    cmd.Parameters.AddWithValue("@first_name", person.first_name);
+                    cmd.Parameters.AddWithValue("@last_name", person.last_name);
+                    cmd.Parameters.AddWithValue("@secret_code", person.secret_code);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -74,13 +74,13 @@ namespace Malshinon.Dal
             }
             return id;
         }
-        public People GetPeopleByID(int id)
+        public Person GetPersonByID(int id)
         {
             string query = $"SELECT *  FROM `people` WHERE `id`=@id";
             string first_name, last_name, secret_code;
             int num_reports, num_mentions;
             PersonType type_poeple;
-            People newPeople = new People();
+            Person newPeople = new Person();
             MySqlCommand cmd = null;
             MySqlDataReader reader = null;
             try
@@ -93,7 +93,7 @@ namespace Malshinon.Dal
 
                 while (reader.Read())
                 {
-                    newPeople = new People
+                    newPeople = new Person
                     {
                         id = id,
                         first_name = reader.GetString("first_name"),
@@ -305,7 +305,7 @@ namespace Malshinon.Dal
 
         public void GetAllPotentialAgents()
         {
-            string query = "SELECT p.first_name, p.num_reports AVG(LENGTH(i.text)) AS avg_text_length FROM people p JOIN intelreports i ON p.id = i.reporter_id WHERE p.type_poeple = 'potential_agent' GROUP BY p.first_name;";
+            string query = "SELECT p.first_name,  p.num_reports,    AVG(LENGTH(i.text)) AS avg_text_length FROM   people p JOIN    intelreports i ON p.id = i.reporter_id WHERE    p.type_poeple = 'potential_agent' GROUP BY    p.first_name, p.num_reports; ";
             string first_name;
             int avg_text_length, num_reports;
             MySqlCommand cmd = null;
@@ -324,6 +324,7 @@ namespace Malshinon.Dal
                     num_reports = reader.GetInt32("num_reports"),
                     avg_text_length = reader.GetInt32("avg_text_length")
                 );
+                ConsoleDisplay.ResetHeader();
             }
 
             catch (Exception ex)
