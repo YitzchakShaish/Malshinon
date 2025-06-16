@@ -13,7 +13,7 @@ namespace Malshinon
         both,
         potential_agent
     }
-    internal class People
+    internal class Person
     {
      public   int id { get; set; }
      public   string first_name { get; set; }
@@ -23,19 +23,19 @@ namespace Malshinon
         public int num_reports { get; set; } = 0;
         public int num_mentions { get; set; } = 0;
 
-        public People(string first_name, string last_name, string secret_code)
+        public Person(string first_name, string last_name, string secret_code)
         {
             this.first_name = first_name;
             this.last_name = last_name;
             this.secret_code = secret_code;
         }
 
-        public People(string first_name, string last_name)
+        public Person(string first_name, string last_name)
         {
             this.first_name = first_name;
             this.last_name = last_name;
         }
-        public People()
+        public Person()
         {
             
         }
